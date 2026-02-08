@@ -14,6 +14,7 @@ NC='\033[0m'
 # ----------------------------
 ARCH=$(uname -m)
 HOST="lyeh"
+LFS_HOSTNAME="$HOST"
 BASEDIR=$(pwd)
 KERNEL_VERSION="4.20.12"
 KERNEL_URL="https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-${KERNEL_VERSION}.tar.xz"
@@ -28,7 +29,7 @@ BUSYBOX_URL="https://busybox.net/downloads/binaries/1.31.0-defconfig-multiarch-m
 LFS=$ROOT_MNT
 LFS_TGT="$(uname -m)-lfs-linux-gnu"
 
-export HOST BASEDIR KERNEL_VERSION KERNEL_URL KERNEL_NAME BUILD_DIR \
+export HOST LFS_HOSTNAME BASEDIR KERNEL_VERSION KERNEL_URL KERNEL_NAME BUILD_DIR \
        IMAGE IMAGE_SIZE MNT_ROOT BOOT_MNT ROOT_MNT BUSYBOX_URL LFS LFS_TGT
 
 echo -e "${GREEN}🌟 Environment variables set:${NC}"
@@ -106,6 +107,7 @@ run_step() {
       if ! chroot "$LFS" /usr/bin/env -i \
           KERNEL_URL="$KERNEL_URL" \
           KERNEL_VERSION="$KERNEL_VERSION" \
+          LFS_HOSTNAME="$LFS_HOSTNAME" \
           KERNEL_NAME="$KERNEL_NAME" \
           STUDENT_NAME="lyeh" \
           HOME=/root TERM="$TERM" \

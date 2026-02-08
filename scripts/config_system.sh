@@ -97,8 +97,9 @@ if [[ -r /proc/1/root/etc/resolv.conf ]]; then
 fi
 if [[ ! -s /etc/resolv.conf ]]; then
   cat > /etc/resolv.conf <<EOF
-search 42vienna.com
-nameserver 10.0.2.3
+search localdomain
+nameserver 8.8.8.8
+nameserver 1.1.1.1
 EOF
 fi
 
@@ -113,8 +114,8 @@ cat > /etc/hosts << "EOF"
 # Begin /etc/hosts
 
 127.0.0.1 localhost
-127.0.1.1 lfs.local lfs
-10.0.2.15  lfs.local lfs
+127.0.1.1 ${FQDN_VALUE} ${HOSTNAME_VALUE}
+10.0.2.15 ${FQDN_VALUE} ${HOSTNAME_VALUE}
 
 ::1       localhost ip6-localhost ip6-loopback
 ff02::1   ip6-allnodes
