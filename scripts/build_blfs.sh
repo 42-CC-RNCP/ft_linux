@@ -31,6 +31,8 @@ mkdir -p "$STAMP_DIR"
 BLFS_PACKAGES=(
     wget
     vim
+    curl
+    git
 )
 
 # -----------------------------------------------------------------------------
@@ -148,6 +150,84 @@ build_vim() {
   rm -rf vim[0-9]*
   
   echo "Installed: $(vim --version | head -n1)"
+}
+
+# -----------------------------------------------------------------------------
+# Curl
+# Ref: BLFS 8.4 Networking Libraries → curl
+# -----------------------------------------------------------------------------
+build_curl() {
+  local tarball
+  tarball=$(find_tarball "curl")
+
+  if [[ -z "$tarball" || ! -f "$tarball" ]]; then
+    echo "❌ curl tarball not found in $BLFS_SOURCES"
+    return 1
+  fi
+
+  local ver
+  ver=$(get_version "$tarball")
+  echo "Building curl-$ver ..."
+
+  cd "$BLFS_SOURCES"
+  rm -rf "curl-$ver"
+  tar -xf "$tarball"
+  cd "curl-$ver"
+
+  ./configure --prefix=/usr                   \
+            --disable-static                  \
+            --enable-threaded-resolver        \
+            --with-ca-path=/etc/ssl/certs &&
+
+  make
+
+  make install &&
+
+  rm -rf docs/examples/.deps &&
+
+  find docs \( -name Makefile\* -o -name \*.1 -o -name \*.3 \) -exec rm {} \; &&
+
+  install -v -d -m755 /usr/share/doc/curl-7.64.0 &&
+  cp -v -R docs/*     /usr/share/doc/curl-7.64.0
+
+  # Clean up
+  cd "$BLFS_SOURCES"
+  rm -rf "curl-$ver"
+
+  echo "Installed: $(curl --version | head -n1)"
+}
+
+
+# -----------------------------------------------------------------------------
+# Git
+# Ref: https://www.linuxfromscratch.org/blfs/view/8.4/general/git.html
+# -----------------------------------------------------------------------------
+build_git() {
+  local tarball
+  tarball=$(find_tarball "git")
+
+  if [[ -z "$tarball" || ! -f "$tarball" ]]; then
+    echo "❌ git tarball not found in $BLFS_SOURCES"
+    return 1
+  fi
+
+  local ver
+  ver=$(get_version "$tarball")
+  echo "Building git-$ver ..."
+
+  cd "$BLFS_SOURCES"
+  rm -rf "git-$ver"
+  tar -xf "$tarball"
+  cd "git-$ver"
+
+  ./configure --prefix=/usr --with-gitconfig=/etc/gitconfig &&
+
+  make install
+
+  cd "$BLFS_SOURCES"
+  rm -rf "git-$ver"
+
+  echo "Installed: $(git --version)"
 }
 
 # =============================================================================
