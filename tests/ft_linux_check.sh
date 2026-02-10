@@ -3,7 +3,7 @@
 
 echo "=== ft_linux Pre-Check ==="
 
-STUDENT_LOGIN=$(whoami)
+STUDENT_LOGIN=lyeh
 KERNEL_VERSION=$(uname -r)
 
 echo "1️⃣ Kernel Checks"
@@ -24,8 +24,9 @@ if command -v udevadm &>/dev/null; then
 else
     echo "[FAIL] udev not installed"
 fi
-if systemctl list-units --type=service | grep -q systemd-udevd; then
+if ps aux | grep udevd &>/dev/null; then
     echo "[OK] udev service running"
+    ls /sys/class/net/ 2>/dev/null | grep -v '^lo$' && echo "[OK] Network interfaces detected" || echo "[WARN] No network interfaces detected"
 else
     echo "[WARN] udev service not running"
 fi
