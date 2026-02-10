@@ -177,17 +177,17 @@ build_curl() {
   ./configure --prefix=/usr                   \
             --disable-static                  \
             --enable-threaded-resolver        \
-            --with-ca-path=/etc/ssl/certs &&
+            --with-ca-path=/etc/ssl/certs
 
   make
 
-  make install &&
+  make install
 
-  rm -rf docs/examples/.deps &&
+  rm -rf docs/examples/.deps
 
-  find docs \( -name Makefile\* -o -name \*.1 -o -name \*.3 \) -exec rm {} \; &&
+  find docs \( -name Makefile\* -o -name \*.1 -o -name \*.3 \) -exec rm {} \;
 
-  install -v -d -m755 /usr/share/doc/curl-7.64.0 &&
+  install -v -d -m755 /usr/share/doc/curl-7.64.0
   cp -v -R docs/*     /usr/share/doc/curl-7.64.0
 
   # Clean up
@@ -220,8 +220,8 @@ build_git() {
   tar -xf "$tarball"
   cd "git-$ver"
 
-  ./configure --prefix=/usr --with-gitconfig=/etc/gitconfig &&
-
+  ./configure --prefix=/usr --with-gitconfig=/etc/gitconfig
+  make
   make install
 
   cd "$BLFS_SOURCES"
